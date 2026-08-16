@@ -205,7 +205,7 @@ fun IntroScreen(modifier: Modifier = Modifier, onNext: () -> Unit) {
         ActionButton(
             text = "Next",
             onClick = onNext,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().height(72.dp)
         )
     }
 }
@@ -826,8 +826,8 @@ fun VacationPlanningScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ActionButton(text = "Yes", onClick = onYes, modifier = Modifier.fillMaxWidth())
-            ActionButton(text = "No", onClick = onNo, modifier = Modifier.fillMaxWidth())
+            ActionButton(text = "Yes", onClick = onYes, modifier = Modifier.fillMaxWidth().height(72.dp))
+            ActionButton(text = "No", onClick = onNo, modifier = Modifier.fillMaxWidth().height(72.dp))
         }
 
         Spacer(modifier = Modifier.height(48.dp))
@@ -843,8 +843,8 @@ fun DateSelectionScreen(
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     )
-    val selectedMonth = remember { mutableStateOf(0) }
-    val selectedYear = remember { mutableStateOf(2024) }
+    val selectedMonth = remember { mutableStateOf(-1) }
+    val selectedYear = remember { mutableStateOf(-1) }
     val showDialog = remember { mutableStateOf(false) }
 
     Column(
@@ -877,17 +877,24 @@ fun DateSelectionScreen(
         ActionButton(
             text = "Choose dates in calendar",
             onClick = { showDialog.value = true },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().height(72.dp)
         )
     }
 
     if (showDialog.value) {
-        Dialog(onDismissRequest = { showDialog.value = false }) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
+                .clickable(enabled = true) { showDialog.value = false },
+            contentAlignment = Alignment.Center
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
                     .background(LightBlueBackground, RoundedCornerShape(24.dp))
                     .padding(24.dp)
+                    .clickable(enabled = false) { }
             ) {
                 Text(
                     text = "Select Month and Year",
@@ -907,7 +914,7 @@ fun DateSelectionScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(
-                                    if (selectedMonth.value == months.indexOf(month))
+                                    if (selectedMonth.value != -1 && selectedMonth.value == months.indexOf(month))
                                         Color.White.copy(alpha = 0.2f)
                                     else
                                         Color.Transparent,
@@ -932,7 +939,7 @@ fun DateSelectionScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(
-                                    if (selectedYear.value == year)
+                                    if (selectedYear.value != -1 && selectedYear.value == year)
                                         Color.White.copy(alpha = 0.2f)
                                     else
                                         Color.Transparent,
@@ -964,9 +971,11 @@ fun DateSelectionScreen(
                     ActionButton(
                         text = "Confirm",
                         onClick = {
-                            val dateString = "${months[selectedMonth.value]} ${selectedYear.value}"
-                            showDialog.value = false
-                            onDateSelected(dateString)
+                            if (selectedMonth.value != -1 && selectedYear.value != -1) {
+                                val dateString = "${months[selectedMonth.value]} ${selectedYear.value}"
+                                showDialog.value = false
+                                onDateSelected(dateString)
+                            }
                         },
                         modifier = Modifier
                             .weight(1f)
@@ -1222,8 +1231,8 @@ fun FlightsBookingScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ActionButton(text = "Yes", onClick = onYes, modifier = Modifier.fillMaxWidth())
-            ActionButton(text = "No", onClick = onNo, modifier = Modifier.fillMaxWidth())
+            ActionButton(text = "Yes", onClick = onYes, modifier = Modifier.fillMaxWidth().height(72.dp))
+            ActionButton(text = "No", onClick = onNo, modifier = Modifier.fillMaxWidth().height(72.dp))
         }
 
         Spacer(modifier = Modifier.height(48.dp))
@@ -1390,7 +1399,7 @@ fun SummaryScreen(
         ActionButton(
             text = "Back to Home",
             onClick = onHome,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().height(72.dp)
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -1412,7 +1421,6 @@ fun ActionButton(
             onClick()
         },
         modifier = modifier
-            .height(72.dp)
             .then(
                 if (isPressed.value)
                     Modifier.graphicsLayer(scaleX = 0.95f, scaleY = 0.95f)
