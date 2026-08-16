@@ -1,0 +1,23 @@
+{
+  "name": "travel-verdict-api",
+  "version": "1.0.0",
+  "description": "EU Travel Advisory System with Scoring",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node index.js",
+    "start": "node index.js"
+  },
+  "keywords": ["travel", "advisory", "verdict"],
+  "author": "Travel System",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
