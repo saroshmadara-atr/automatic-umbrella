@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Dialog
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -274,14 +273,19 @@ fun OriginAirportScreen(
     }
 
     if (showDialog.value) {
-        Dialog(
-            onDismissRequest = { showDialog.value = false }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
+                .clickable(enabled = true) { showDialog.value = false },
+            contentAlignment = Alignment.Center
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth(0.95f)
                     .background(LightBlueBackground, RoundedCornerShape(24.dp))
                     .padding(24.dp)
+                    .clickable(enabled = false) { }
             ) {
                 Text(
                     text = "Departure Airport",
@@ -513,14 +517,19 @@ fun DestinationAirportScreen(
     }
 
     if (showDialog.value) {
-        Dialog(
-            onDismissRequest = { showDialog.value = false }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
+                .clickable(enabled = true) { showDialog.value = false },
+            contentAlignment = Alignment.Center
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth(0.95f)
                     .background(LightBlueBackground, RoundedCornerShape(24.dp))
                     .padding(24.dp)
+                    .clickable(enabled = false) { }
             ) {
                 Text(
                     text = "Destination Airport",
@@ -1038,14 +1047,19 @@ fun CountriesSelectionScreen(
     }
 
     if (showDialog.value) {
-        Dialog(
-            onDismissRequest = { showDialog.value = false }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
+                .clickable(enabled = true) { showDialog.value = false },
+            contentAlignment = Alignment.Center
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth(0.95f)
                     .background(LightBlueBackground, RoundedCornerShape(24.dp))
                     .padding(24.dp)
+                    .clickable(enabled = false) { }
             ) {
                 Text(
                     text = "Select Countries",
