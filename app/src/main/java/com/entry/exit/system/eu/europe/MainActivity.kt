@@ -24,6 +24,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -65,6 +66,16 @@ data class Airport(
     val iataCode: String,
     val city: String,
     val country: String
+)
+
+data class TripAdvisory(
+    val from: String,
+    val to: String,
+    val dateRange: String,
+    val status: String,
+    val statusColor: Color,
+    val riskIndex: Int,
+    val advisory: String
 )
 
 class MainActivity : ComponentActivity() {
@@ -1240,10 +1251,146 @@ fun FlightsBookingScreen(
 }
 
 @Composable
+fun TripAdvisoryCard(
+    trip: TripAdvisory
+) {
+    val statusText = when (trip.status) {
+        "NO-GO" -> "Do not"
+        "CLEAR" -> "Go"
+        "CAUTION" -> "Reconsider"
+        else -> trip.status
+    }
+
+    val backgroundColor = when (trip.status) {
+        "NO-GO" -> Color(0xFFFFEAE6)
+        "CLEAR" -> Color(0xFFE8F5E9)
+        "CAUTION" -> Color(0xFFFFF3E0)
+        else -> Color(0xFFF5F5F5)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(backgroundColor, RoundedCornerShape(24.dp))
+            .padding(24.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    text = trip.from + " → " + trip.to,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+                Text(
+                    text = trip.dateRange,
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .background(trip.statusColor, RoundedCornerShape(12.dp))
+                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = trip.status,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
+        }
+
+        Text(
+            text = statusText,
+            fontSize = 56.sp,
+            fontWeight = FontWeight.Bold,
+            color = trip.statusColor,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                LinearProgressIndicator(
+                    progress = (trip.riskIndex / 100f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(6.dp),
+                    color = trip.statusColor,
+                    trackColor = Color.Gray.copy(alpha = 0.3f)
+                )
+            }
+
+            Text(
+                text = "risk index\n${trip.riskIndex}/100",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black,
+                textAlign = TextAlign.End,
+                lineHeight = 16.sp
+            )
+        }
+
+        Text(
+            text = trip.advisory,
+            fontSize = 14.sp,
+            color = Color.Black,
+            lineHeight = 20.sp
+        )
+    }
+}
+
+@Composable
 fun SummaryScreen(
     modifier: Modifier = Modifier,
     onHome: () -> Unit
 ) {
+    val trips = listOf(
+        TripAdvisory(
+            from = "Yerevan",
+            to = "Beirut",
+            dateRange = "Aug 14 – 21",
+            status = "NO-GO",
+            statusColor = Color(0xFFD32F2F),
+            riskIndex = 86,
+            advisory = "Active escalation on the corridor with airspace advisories. Cancel refundable bookings and delay travel."
+        ),
+        TripAdvisory(
+            from = "Almaty",
+            to = "Istanbul",
+            dateRange = "Sep 03 – 10",
+            status = "CLEAR",
+            statusColor = Color(0xFF388E3C),
+            riskIndex = 24,
+            advisory = "Route is stable with normal advisories. Fares are steady — a good window to book."
+        ),
+        TripAdvisory(
+            from = "Bishkek",
+            to = "Tbilisi",
+            dateRange = "Aug 12 – 19",
+            status = "CAUTION",
+            statusColor = Color(0xFFE67E22),
+            riskIndex = 62,
+            advisory = "Elevated regional tension and volatile fares. Travel is possible but hold a refundable fare and watch daily."
+        )
+    )
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -1255,7 +1402,7 @@ fun SummaryScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "Welcome to EES",
+            text = "Your Travel Alerts",
             color = Color.White,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
@@ -1263,138 +1410,18 @@ fun SummaryScreen(
             modifier = Modifier.padding(bottom = 32.dp)
         )
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White.copy(alpha = 0.1f), RoundedCornerShape(16.dp))
-                .padding(20.dp),
-            horizontalAlignment = Alignment.Start
+                .weight(1f),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "Entry Exit System Advisory",
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-            Text(
-                text = "Ensure your travel documents are valid. Register your entry and exit details before traveling.",
-                color = Color.White.copy(alpha = 0.9f),
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-            Text(
-                text = "Status: Ready to Travel",
-                color = Color.Green,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White.copy(alpha = 0.1f), RoundedCornerShape(16.dp))
-                .padding(20.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = "Upcoming Trip",
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Departure:", color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
-                Text("Ready", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Destination:", color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
-                Text("Ready", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Documents:", color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
-                Text("Complete", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+            items(trips) { trip ->
+                TripAdvisoryCard(trip = trip)
             }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White.copy(alpha = 0.1f), RoundedCornerShape(16.dp))
-                .padding(20.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = "Alerts",
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            Row(
-                modifier = Modifier.padding(bottom = 12.dp),
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text("✓", color = Color.Green, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Column {
-                    Text("All requirements met", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                    Text("Your travel is approved", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp)
-                }
-            }
-
-            Row(
-                modifier = Modifier.padding(bottom = 12.dp),
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text("!", color = Color.Yellow, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Column {
-                    Text("Check travel advisories", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                    Text("Before departure", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp)
-                }
-            }
-
-            Row(
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text("ℹ", color = Color.Cyan, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Column {
-                    Text("Keep documents accessible", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                    Text("During your journey", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp)
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
 
         ActionButton(
             text = "Back to Home",
