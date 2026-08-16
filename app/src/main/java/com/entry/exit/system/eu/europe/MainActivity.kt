@@ -1293,7 +1293,7 @@ fun TripAdvisoryCard(
 
             Box(
                 modifier = Modifier
-                    .background(trip.statusColor, RoundedCornerShape(12.dp))
+                    .background(LightBlueBackground, RoundedCornerShape(12.dp))
                     .padding(horizontal = 12.dp, vertical = 6.dp),
                 contentAlignment = Alignment.Center
             ) {
