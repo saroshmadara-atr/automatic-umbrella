@@ -1262,17 +1262,10 @@ fun TripAdvisoryCard(
         else -> trip.status
     }
 
-    val backgroundColor = when (trip.status) {
-        "NO-GO" -> Color(0xFFFFEAE6)
-        "CLEAR" -> Color(0xFFE8F5E9)
-        "CAUTION" -> Color(0xFFFFF3E0)
-        else -> Color(0xFFF5F5F5)
-    }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(backgroundColor, RoundedCornerShape(24.dp))
+            .background(Color.White, RoundedCornerShape(24.dp))
             .padding(24.dp)
     ) {
         Row(
@@ -1316,7 +1309,7 @@ fun TripAdvisoryCard(
             text = statusText,
             fontSize = 56.sp,
             fontWeight = FontWeight.Bold,
-            color = trip.statusColor,
+            color = LightBlueBackground,
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
@@ -1333,7 +1326,7 @@ fun TripAdvisoryCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(6.dp),
-                    color = trip.statusColor,
+                    color = LightBlueBackground,
                     trackColor = Color.Gray.copy(alpha = 0.3f)
                 )
             }
