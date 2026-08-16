@@ -840,12 +840,13 @@ fun DateSelectionScreen(
     onDateSelected: (String) -> Unit
 ) {
     val months = listOf(
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
+        "August", "September", "October", "November", "December"
     )
     val selectedMonth = remember { mutableStateOf(-1) }
     val selectedYear = remember { mutableStateOf(-1) }
     val showDialog = remember { mutableStateOf(false) }
+
+    val availableYears = (2026..2035).toList()
 
     Column(
         modifier = modifier
@@ -930,8 +931,7 @@ fun DateSelectionScreen(
 
                 Text("Year", color = Color.White, fontSize = 14.sp, modifier = Modifier.padding(bottom = 8.dp))
                 LazyColumn(modifier = Modifier.height(150.dp)) {
-                    items(10) { i ->
-                        val year = 2024 + i
+                    items(availableYears) { year ->
                         Text(
                             text = year.toString(),
                             color = Color.White,
